@@ -1,0 +1,70 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = 'urmsandeep/ai-artistic-style-service:latest'
+        DOCKER_COMPOSE = '/usr/local/bin/docker-compose'  // Adjust if needed
+        LOCAL_REPO_PATH = '/path/to/your/local/repo'  // Update with your actual repo path
+    }
+
+    stages {
+        stage('Pull Docker Image') {
+            steps {
+                script {
+                    // Pull the latest Docker image
+                    sh 'docker pull ${DOCKER_IMAGE}'
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    // Run tests to ensure the container works correctly
+                    sh '''
+                        docker run --rm -p 5001:5001 ${DOCKER_IMAGE} pytest tests/
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy Service') {
+            steps {
+                script {
+                    // Deploy the service using Docker Compose
+                    sh '''
+                        docker-compose down  # Stop the old container
+                        docker-compose up -d  # Start the new container
+                    '''
+                }
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                script {
+                    // Verify that the service is running by testing the endpoint
+                    sh '''
+                        sleep 5  # Wait for the service to start
+                        curl -X POST http://127.0.0.1:5001/styleTransfer -F "image=@test.jpg" --output styled_output.jpg
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up dangling Docker containers and images
+            sh 'docker system prune -f'
+        }
+
+        success {
+            echo 'Pipeline executed successfully. The service is running and functional!'
+        }
+
+        failure {
+            echo 'Pipeline failed. Check logs for errors.'
+        }
+    }
+}
