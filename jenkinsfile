@@ -46,11 +46,11 @@ pipeline {
                 }
             }
         }
-       stage('Verify Deployment') {
+        stage('Verify Deployment') {
     steps {
         script {
             bat '''
-            timeout /t 5 > nul
+            ping 127.0.0.1 -n 6 > nul
             if exist test.jpg (
                 curl -X POST http://127.0.0.1:5001/styleTransfer -F "image=@test.jpg" --output styled_output.jpg
             ) else (
