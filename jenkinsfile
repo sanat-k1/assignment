@@ -46,16 +46,21 @@ pipeline {
                 }
             }
         }
-        stage('Verify Deployment') {
-            steps {
-                script {
-                    bat '''
-                    Start-Sleep -Seconds 5
-                    curl -X POST http://127.0.0.1:5001/styleTransfer -F "image=@test.jpg" --output styled_output.jpg
-                    '''
-                }
-            }
+       stage('Verify Deployment') {
+    steps {
+        script {
+            bat '''
+            timeout /t 5 > nul
+            if exist test.jpg (
+                curl -X POST http://127.0.0.1:5001/styleTransfer -F "image=@test.jpg" --output styled_output.jpg
+            ) else (
+                echo File "test.jpg" not found & exit /b 1
+            )
+            '''
         }
+    }
+}
+
         
     }
     post {
