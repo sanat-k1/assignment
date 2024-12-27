@@ -3,7 +3,7 @@ version: '3.8'
 services:
   ai-artistic-style-service:
     image: urmsandeep/ai-artistic-style-service
-    container_name: ai-artistic-style-service
+    container_name: ai-artistic-style-service2
     ports:
       - "5001:5001"
     restart: always
@@ -14,14 +14,14 @@ services:
 
   prometheus-http-exporter:
     image: prom/blackbox-exporter
-    container_name: prometheus-http-exporter
+    container_name: prometheus-http-exporter2
     ports:
       - "9999:9115"
     restart: always
 
   prometheus:
     image: prom/prometheus
-    container_name: prometheus
+    container_name: prometheus2
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
@@ -30,7 +30,7 @@ services:
 
   grafana:
     image: grafana/grafana
-    container_name: grafana
+    container_name: grafana2
     ports:
       - "3000:3000"
     environment:
