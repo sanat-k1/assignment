@@ -10,15 +10,6 @@ pipeline {
                 }
             }
         }
-        stage('Print Working Directory') {
-            steps {
-                script {
-                    powershell '''
-                    Write-Output "Current working directory: $pwd"
-                    '''
-                }
-            }
-        }
         stage('Run Tests') {
             steps {
                 script {

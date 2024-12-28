@@ -10,7 +10,7 @@ services:
     volumes:
       - ./tests:/app/tests  # Assuming you want to mount the tests directory
     environment:
-      - PYTHONUNBUFFERED=1  # Optional: Ensure Python output is not buffered, useful for logs
+      - PYTHONUNBUFFERED=1  
 
   prometheus-http-exporter:
     image: prom/blackbox-exporter
